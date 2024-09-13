@@ -15,11 +15,12 @@ public class Main {
                 min = Integer.min(min, arr[i][j]);
             }
         }
-        System.out.println("2. Минимальный элемент массива: " + min);
+        out.println("2. Минимальный элемент массива: " + min);
     }
 
     private static void exerciseOne() {
         var sum = 0;
+        
         for (var i = 0; i <= 1000; i++) {
             if (i % 3 == 0 || i % 5 == 0) sum += i;
         }
