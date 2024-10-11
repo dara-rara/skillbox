@@ -1,0 +1,2 @@
+app:
+  path: ${FILE_PATH:src/main/resources/students.txt}

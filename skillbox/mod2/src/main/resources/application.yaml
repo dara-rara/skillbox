@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: ${PROFILE:init}
+
+server:
+  port: ${SOCKET_SERVER_PORT:8888}
