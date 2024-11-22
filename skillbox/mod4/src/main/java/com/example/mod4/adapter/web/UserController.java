@@ -21,7 +21,6 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class UserController {
     private final UserService userService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok(userService.findAll());

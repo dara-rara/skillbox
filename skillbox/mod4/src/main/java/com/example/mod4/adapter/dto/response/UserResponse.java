@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserResponse {
 
-    private Long id;
+    private Long id_user;
     private String username;
-//    private String role;
 }
