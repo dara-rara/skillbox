@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13.3
+    ports:
+      - "6432:5432"
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - default
+    command: ["postgres", "-c", "listen_addresses=*"]
+
+  redis:
+    image: redis:7.0.12
+    ports:
+      - "6380:6379"
+
+
+# для запуска файла выполнить команду в терминале:
+#  cd docker
+# docker compose up -d
+

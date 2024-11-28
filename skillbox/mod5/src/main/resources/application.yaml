@@ -1,0 +1,32 @@
+spring:
+  application:
+    name:
+      mod5
+  data:
+    redis:
+      host: localhost
+      port: 6380
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:6432}/${POSTGRES_DB:books_db}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  redis:
+    enable: true
+  cache:
+    cache-names:
+      - booksByCategory
+      - booksByNameAndAuthor
+    caches:
+      booksByNameAndAuthor:
+        expiry: 10s
+      booksByCategory:
+        expiry: 10s
