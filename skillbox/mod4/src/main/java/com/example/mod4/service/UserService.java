@@ -36,11 +36,15 @@ public class UserService implements UserDetailsService{
         if (usernameExists(registrationRequest.getUsername())) {
             throw new UsernameNotFoundException(registrationRequest.getUsername());
         }
-        var newUser = new UserEntity();
-        newUser.setUsername(registrationRequest.getUsername());
-        newUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-        newUser.setRole(Role.USER);
-        return userRepository.save(newUser);
+        return userRepository.save(userMapper.toCreate(registrationRequest, passwordEncoder));
+    }
+
+    public UserEntity updateUser(Long id, UserRequest userRequest) {
+        var user = getByUserId(id);
+        if (usernameExists(userRequest.getUsername())) {
+            throw new UsernameNotFoundException(userRequest.getUsername());
+        }
+        return userRepository.save(userMapper.toUpdated(user, userRequest));
     }
 
     public boolean usernameExists(String name) {
@@ -53,7 +57,18 @@ public class UserService implements UserDetailsService{
     }
 
     public UserEntity getByUserId(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("News not found"));
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден"));
+    }
+
+    public void deleteUser(Long userId) {
+        var user = getByUserId(userId);
+        userRepository.delete(user);
+    }
+
+    public boolean checkRole(Long id, UserEntity user) {
+        if (user.getRole().equals("ROLE_USER") && !id.equals(user.getId_user()))
+            return false;
+        return true;
     }
 
     @Override

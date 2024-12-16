@@ -6,6 +6,7 @@ import com.example.mod4.adapter.dto.response.NewListResponse;
 import com.example.mod4.adapter.dto.response.UserResponse;
 import com.example.mod4.domain.user.UserEntity;
 import com.example.mod4.service.NewService;
+import com.example.mod4.service.aop.UserAccessCheck;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,23 +30,24 @@ public class NewController {
         return ResponseEntity.ok(newService.findAll());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> create(@AuthenticationPrincipal UserEntity user, @RequestBody NewsRequest request) {
+    @PostMapping()
+    public ResponseEntity<?> createNews(@AuthenticationPrincipal UserEntity user, @RequestBody NewsRequest request) {
         return ResponseEntity.status(201).body(newService.createNew(user, request));
     }
 
-    @PostMapping("/edit/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @AuthenticationPrincipal UserEntity user, @RequestBody NewsRequest request) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateNews(@PathVariable Long id, @AuthenticationPrincipal UserEntity user, @RequestBody NewsRequest request) {
         return ResponseEntity.status(200).body(newService.editNew(id, user, request));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
-        newService.deleteNew(id, user);
+    @DeleteMapping("/{id}")
+    @UserAccessCheck(action = "DELETE")
+    public ResponseEntity<?> deleteNews(@PathVariable Long id) {
+        newService.deleteNew(id);
         return ResponseEntity.status(200).body(new MessageResponse("Delete new: " + id));
     }
 
-    @GetMapping("/new/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getNews(@PathVariable Long id) {
         return ResponseEntity.status(200).body(newService.findByNews(id));
     }

@@ -34,6 +34,10 @@ public interface CommentMapper {
         return models.stream().map(this::toResponseForList).toList();
     };
 
+    default CommentResponse toResponse(CommentEntity model) {
+        return toResponseForList(model);
+    }
+
     private CommentResponse toResponseForList(CommentEntity model) {
         var response = new  CommentResponse();
         response.setId(model.getId());

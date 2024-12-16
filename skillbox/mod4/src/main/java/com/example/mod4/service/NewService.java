@@ -45,7 +45,7 @@ public class NewService {
     }
 
     @CheckOwnership(repositoryClass = "NewRepository")
-    public void deleteNew(Long newsId, UserEntity user) {
+    public void deleteNew(Long newsId) {
         var news = newRepository.findById(newsId).orElseThrow(() -> new ResourceNotFoundException("News not found"));
         newRepository.delete(news);
     }

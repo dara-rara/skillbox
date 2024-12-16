@@ -28,9 +28,22 @@ public class CategoryService {
         else return categoryRepository.findByName(request.getName()).get();
     }
 
+    public void createCategoryManually(CategoryRequest request) {
+        if (!categoryRepository.existsByName(request.getName()))
+            categoryRepository.save(categoryMapper.toModel(request));
+    }
+
+    public void updateCategory(Long id, CategoryRequest request) {
+        categoryRepository.save(categoryMapper.toUpdate(getCategory(id),request));
+    }
+
+    public void deleteCategory(Long id) {
+        categoryRepository.delete(getCategory(id));
+    }
+
     public CategoryEntity getCategory(Long id) {
         return categoryRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("News not found"));
+                new ResourceNotFoundException("Category not found"));
     }
 
     public List<CategoryResponse> findAll() {

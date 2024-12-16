@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CheckOwnership {
-    String repositoryClass();
+public @interface UserAccessCheck {
+    String action(); // Действие: "READ", "UPDATE", "DELETE"
 }

@@ -1,6 +1,7 @@
 package com.example.mod4.service;
 
 import com.example.mod4.adapter.dto.request.CommentRequest;
+import com.example.mod4.adapter.dto.response.CommentResponse;
 import com.example.mod4.adapter.repository.CommentRepository;
 import com.example.mod4.adapter.repository.NewRepository;
 import com.example.mod4.domain.CategoryEntity;
@@ -35,17 +36,19 @@ public class CommentService {
         return comment;
     }
 
+    public CommentEntity getComment(Long id) {
+        return commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+    }
+
     @CheckOwnership(repositoryClass = "CommentRepository")
-    public void deleteComment(Long commentId, UserEntity user) {
-        var comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFoundException("News not found"));
+    public void deleteComment(Long commentId) {
+        var comment = getComment(commentId);
         commentRepository.delete(comment);
     }
 
     @CheckOwnership(repositoryClass = "CommentRepository")
-    public CommentEntity editComment(Long commentId, UserEntity user, CommentRequest commentRequest) {
-        var comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFoundException("News not found"));
+    public CommentEntity editComment(Long commentId, CommentRequest commentRequest) {
+        var comment = getComment(commentId);
         commentRepository.save(commentMapper.toUpdateModel(comment, commentRequest));
         return comment;
     }

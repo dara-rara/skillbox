@@ -18,7 +18,7 @@ public class OwnershipAspect {
     private final CommentRepository commentRepository;
     private final NewRepository newRepository;
 
-    @Around("@annotation(checkOwnership)")
+    @Around("@annotation(CheckOwnership)")
     public Object checkOwnership(ProceedingJoinPoint joinPoint, CheckOwnership checkOwnership) throws Throwable {
         Long commentId = (Long) joinPoint.getArgs()[0]; // Id - первый аргумент метода
         UserEntity user = (UserEntity) joinPoint.getArgs()[1]; // user - второй аргумент метода
