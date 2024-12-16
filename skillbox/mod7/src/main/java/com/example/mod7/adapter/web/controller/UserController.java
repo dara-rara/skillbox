@@ -6,6 +6,7 @@ import com.example.mod7.domain.Role;
 import com.example.mod7.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,6 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGER', 'ROLE_USER')")
     public Flux<UserResponse> getAll() {
         return userService.findAll();
     }
@@ -29,6 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGER', 'ROLE_USER')")
     public Mono<ResponseEntity<UserResponse>> getById(@PathVariable String id) {
         return userService.findById(id)
                 .map(ResponseEntity::ok)
@@ -36,6 +39,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGER', 'ROLE_USER')")
     public Mono<ResponseEntity<UserResponse>> update(@PathVariable String id, @RequestBody UserRequest request) {
         return userService.update(id, request)
                 .map(ResponseEntity::ok)
@@ -43,6 +47,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGER', 'ROLE_USER')")
     public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
         return userService.deleteById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));

@@ -7,6 +7,7 @@ import com.example.mod7.domain.Role;
 import com.example.mod7.domain.User;
 import com.example.mod7.adapter.exception.UniqueException;
 import com.example.mod7.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,41 +18,42 @@ import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Objects.nonNull;
 
 @Service
-
+@RequiredArgsConstructor
 public class UserService implements ReactiveUserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    private final Map<String, UserDetails> users = new HashMap<>();
-
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-
-        users.put("user", org.springframework.security.core.userdetails.User.withUsername("user")
-                .password(passwordEncoder.encode("user"))
-                .roles("USER")
-                .build());
-
-        users.put("edit", org.springframework.security.core.userdetails.User.withUsername("edit")
-                .password(passwordEncoder.encode("edit"))
-                .roles("EDIT")
-                .build());
-    }
+//    private final Map<String, UserDetails> users = new HashMap<>();
+//
+//    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, UserMapper userMapper) {
+//        this.userRepository = userRepository;
+//        this.userMapper = userMapper;
+//        this.passwordEncoder = passwordEncoder;
+//
+//        users.put("user", org.springframework.security.core.userdetails.User.withUsername("user")
+//                .password(passwordEncoder.encode("user"))
+//                .roles("ROLE_USER")
+//                .build());
+//
+//        users.put("edit", org.springframework.security.core.userdetails.User.withUsername("edit")
+//                .password(passwordEncoder.encode("edit"))
+//                .roles("ROLE_MANAGER")
+//                .build());
+//    }
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
         return userRepository.findUserByUsername(username) // Запрос к базе данных
                 .map(user -> org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
                         .password(user.getPassword())
-                        .roles(String.valueOf(user.getRole()))
+                        .authorities(String.valueOf(user.getRole()))
                         .build());
     }
 
@@ -62,6 +64,7 @@ public class UserService implements ReactiveUserDetailsService {
         }
         User user = userMapper.toUser(request);
         user.setRole(role);
+        user.setRoles(Set.of(role));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.toMonoResponse(userRepository.save(user));
     }

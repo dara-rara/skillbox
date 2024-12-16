@@ -3,15 +3,17 @@ package com.example.mod7.domain;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
-@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,11 +26,14 @@ public class User implements UserDetails {
     private String password;
     private String email;
     private Role role;
+    @Field("roles")
+    private Set<Role> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(getRole().name()));
+        return getRoles().stream().map(Role::toAuthority).toList();
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

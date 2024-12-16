@@ -17,17 +17,20 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGER', 'ROLE_USER')")
     public Flux<TaskResponse> getAll() {
         return taskService.findAll();
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public Mono<ResponseEntity<TaskResponse>> create(@RequestBody TaskRequest request) {
         return taskService.create(request)
                 .map(ResponseEntity::ok);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGER', 'ROLE_USER')")
     public Mono<ResponseEntity<TaskResponse>> getTask(@PathVariable String id) {
         return taskService.findById(id)
                 .map(ResponseEntity::ok)
@@ -35,6 +38,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public Mono<ResponseEntity<TaskResponse>> update(@PathVariable String id, @RequestBody TaskRequest request) {
         return taskService.update(id, request)
                 .map(ResponseEntity::ok)
@@ -49,6 +53,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public Mono<ResponseEntity<Void>> deleteItem(@PathVariable String id) {
         return taskService.deleteById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
